@@ -1,0 +1,31 @@
+services:
+  dashboard:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data_store:/app/data_store
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    command: streamlit run src/polyquant/dashboard/app.py --server.address=0.0.0.0 --server.port=8501
+
+  paper-trading:
+    build: .
+    volumes:
+      - ./data_store:/app/data_store
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    command: python scripts/run_paper_trading.py
+    profiles: ["paper-trading"]
+
+  fetch-data:
+    build: .
+    volumes:
+      - ./data_store:/app/data_store
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    command: python scripts/fetch_data.py
+    profiles: ["fetch-data"]
